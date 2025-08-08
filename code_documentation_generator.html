@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost Desk Code Documentation Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .branding {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .textarea-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .option-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+
+        select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .output-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .output-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .output-content {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.5;
+        }
+
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .copy-btn:hover {
+            background: #218838;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .ghost-logo {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            .options {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><span class="ghost-logo">👻</span>Ghost Desk Code Documentation Generator</h1>
+            <p>Transform messy code into professional documentation instantly</p>
+            <p class="branding">Powered by the team behind Ghost Desk AI Security Tools</p>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h3>📝 Paste Your Code</h3>
+                <div class="textarea-container">
+                    <textarea id="codeInput" placeholder="Paste your code here... (supports Python, JavaScript, Java, C++, and more)
+
+Example:
+function calc(x,y,z){
+    return z>0 ? x*y+z : x*y;
+}"></textarea>
+                </div>
+
+                <div class="options">
+                    <div class="option-group">
+                        <label for="language">Programming Language</label>
+                        <select id="language">
+                            <option value="auto">Auto-detect</option>
+                            <option value="python">Python</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="java">Java</option>
+                            <option value="cpp">C++</option>
+                            <option value="csharp">C#</option>
+                            <option value="php">PHP</option>
+                            <option value="ruby">Ruby</option>
+                            <option value="go">Go</option>
+                            <option value="rust">Rust</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="style">Documentation Style</label>
+                        <select id="style">
+                            <option value="inline">Inline Comments</option>
+                            <option value="full">Full Documentation</option>
+                            <option value="readme">README Format</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="verbosity">Detail Level</label>
+                        <select id="verbosity">
+                            <option value="concise">Concise</option>
+                            <option value="detailed">Detailed</option>
+                            <option value="comprehensive">Comprehensive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="generate-btn" onclick="generateDocumentation()">
+                    🚀 Generate Documentation
+                </button>
+            </div>
+
+            <div class="output-section" id="outputSection" style="display: none;">
+                <h3>📋 Generated Documentation</h3>
+                <div class="output-content" id="outputContent"></div>
+                <button class="copy-btn" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Built by <a href="#" target="_blank">Ghost Desk</a> - Enterprise AI Security & Digital Forensics Solutions</p>
+            <p>⚡ Need custom AI tools for your business? We build enterprise solutions in weeks, not months.</p>
+        </div>
+    </div>
+
+    <script>
+        function detectLanguage(code) {
+            const patterns = {
+                python: /def\s+\w+\(|import\s+\w+|from\s+\w+|if\s+__name__\s*==|print\(/,
+                javascript: /function\s+\w+\(|const\s+\w+|let\s+\w+|var\s+\w+|=>\s*{|console\.log/,
+                java: /public\s+class|private\s+\w+|public\s+static\s+void\s+main|System\.out\.print/,
+                cpp: /#include\s*<|std::|cout\s*<<|int\s+main\s*\(/,
+                csharp: /using\s+System|public\s+class|Console\.WriteLine|namespace\s+\w+/,
+                php: /<\?php|echo\s+|function\s+\w+\(|\$\w+/,
+                ruby: /def\s+\w+|puts\s+|require\s+|end\s*$/,
+                go: /package\s+main|func\s+\w+\(|fmt\.Print|import\s*\(/,
+                rust: /fn\s+\w+\(|let\s+mut|println!|use\s+std::/
+            };
+
+            for (const [lang, pattern] of Object.entries(patterns)) {
+                if (pattern.test(code)) {
+                    return lang;
+                }
+            }
+            return 'unknown';
+        }
+
+        function generateDocumentation() {
+            const code = document.getElementById('codeInput').value.trim();
+            const language = document.getElementById('language').value;
+            const style = document.getElementById('style').value;
+            const verbosity = document.getElementById('verbosity').value;
+
+            if (!code) {
+                alert('Please enter some code to document!');
+                return;
+            }
+
+            const detectedLang = language === 'auto' ? detectLanguage(code) : language;
+            const documentation = createDocumentation(code, detectedLang, style, verbosity);
+
+            document.getElementById('outputContent').textContent = documentation;
+            document.getElementById('outputSection').style.display = 'block';
+            document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function createDocumentation(code, language, style, verbosity) {
+            const functions = extractFunctions(code, language);
+            const variables = extractVariables(code, language);
+            
+            if (style === 'readme') {
+                return generateReadme(code, language, functions, variables, verbosity);
+            } else if (style === 'full') {
+                return generateFullDocs(code, language, functions, variables, verbosity);
+            } else {
+                return generateInlineComments(code, language, functions, variables, verbosity);
+            }
+        }
+
+        function extractFunctions(code, language) {
+            const patterns = {
+                python: /def\s+(\w+)\s*\([^)]*\):/g,
+                javascript: /function\s+(\w+)\s*\([^)]*\)|(\w+)\s*=\s*\([^)]*\)\s*=>/g,
+                java: /(public|private|protected)?\s*\w+\s+(\w+)\s*\([^)]*\)/g,
+                cpp: /\w+\s+(\w+)\s*\([^)]*\)/g
+            };
+
+            const pattern = patterns[language];
+            if (!pattern) return [];
+
+            const matches = [];
+            let match;
+            while ((match = pattern.exec(code)) !== null) {
+                matches.push(match[1] || match[2] || match[0]);
+            }
+            return matches;
+        }
+
+        function extractVariables(code, language) {
+            const patterns = {
+                python: /(\w+)\s*=/g,
+                javascript: /(const|let|var)\s+(\w+)/g,
+                java: /\w+\s+(\w+)\s*=/g,
+                cpp: /\w+\s+(\w+)\s*=/g
+            };
+
+            const pattern = patterns[language];
+            if (!pattern) return [];
+
+            const matches = [];
+            let match;
+            while ((match = pattern.exec(code)) !== null) {
+                matches.push(match[1] || match[2]);
+            }
+            return matches.slice(0, 10); // Limit to first 10 variables
+        }
+
+        function generateReadme(code, language, functions, variables, verbosity) {
+            return `# Code Documentation
+
+## Overview
+This ${language} code contains ${functions.length} function(s) and implements core functionality.
+
+## Functions
+${functions.map(func => `- \`${func}()\` - Handles ${func.toLowerCase()} operations`).join('\n')}
+
+## Usage
+\`\`\`${language}
+${code.split('\n').slice(0, 10).join('\n')}${code.split('\n').length > 10 ? '\n...' : ''}
+\`\`\`
+
+## Key Variables
+${variables.slice(0, 5).map(variable => `- \`${variable}\` - ${generateVariableDescription(variable)}`).join('\n')}
+
+---
+*Documentation generated by Ghost Desk Code Documentation Generator*`;
+        }
+
+        function generateFullDocs(code, language, functions, variables, verbosity) {
+            const lines = code.split('\n');
+            let documented = '';
+            let inFunction = false;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const trimmed = line.trim();
+                
+                // Add function documentation
+                if (isFunction(trimmed, language)) {
+                    const funcName = extractFunctionName(trimmed, language);
+                    documented += generateFunctionDoc(funcName, language, verbosity) + '\n';
+                    inFunction = true;
+                }
+                
+                documented += line + '\n';
+                
+                // Add inline comments for complex operations
+                if (shouldAddComment(trimmed)) {
+                    documented += line.replace(/^(\s*)/, '$1// ' + generateInlineComment(trimmed)) + '\n';
+                }
+            }
+            
+            return documented;
+        }
+
+        function generateInlineComments(code, language, functions, variables, verbosity) {
+            const lines = code.split('\n');
+            let documented = '';
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const trimmed = line.trim();
+                
+                if (trimmed && !trimmed.startsWith('//') && !trimmed.startsWith('#')) {
+                    const comment = generateInlineComment(trimmed);
+                    const commentPrefix = language === 'python' ? '# ' : '// ';
+                    
+                    if (isFunction(trimmed, language)) {
+                        documented += line.replace(/^(\s*)/, `$1${commentPrefix}${comment}\n$1`) + '\n';
+                    } else if (shouldAddComment(trimmed)) {
+                        documented += line + `  ${commentPrefix}${comment}` + '\n';
+                    } else {
+                        documented += line + '\n';
+                    }
+                } else {
+                    documented += line + '\n';
+                }
+            }
+            
+            return documented;
+        }
+
+        function isFunction(line, language) {
+            const patterns = {
+                python: /def\s+\w+/,
+                javascript: /function\s+\w+|\w+\s*=.*=>/,
+                java: /(public|private|protected).*\w+\s*\(/,
+                cpp: /\w+\s+\w+\s*\(/
+            };
+            return patterns[language] && patterns[language].test(line);
+        }
+
+        function extractFunctionName(line, language) {
+            const match = line.match(/(\w+)\s*\(/);
+            return match ? match[1] : 'function';
+        }
+
+        function generateFunctionDoc(funcName, language, verbosity) {
+            const descriptions = {
+                'calc': 'Performs calculations with given parameters',
+                'process': 'Processes input data and returns results',
+                'handle': 'Handles specific operations',
+                'get': 'Retrieves and returns data',
+                'set': 'Sets or updates values',
+                'create': 'Creates new instances or objects',
+                'update': 'Updates existing data or state',
+                'delete': 'Removes or deletes items',
+                'validate': 'Validates input parameters',
+                'format': 'Formats data for output'
+            };
+
+            const defaultDesc = descriptions[funcName.toLowerCase()] || `Handles ${funcName.toLowerCase()} functionality`;
+            
+            if (language === 'python') {
+                return `    """
+    ${defaultDesc}
+    
+    Args:
+        Parameters as defined in function signature
+        
+    Returns:
+        Appropriate return value based on function logic
+    """`;
+            } else {
+                return `    /**
+     * ${defaultDesc}
+     * @param {*} parameters Function parameters
+     * @returns {*} Function result
+     */`;
+            }
+        }
+
+        function shouldAddComment(line) {
+            return line.includes('if') || line.includes('for') || line.includes('while') || 
+                   line.includes('return') || line.includes('=') && !line.includes('==');
+        }
+
+        function generateInlineComment(line) {
+            if (line.includes('return')) return 'Return calculated result';
+            if (line.includes('if')) return 'Conditional logic check';
+            if (line.includes('for') || line.includes('while')) return 'Loop iteration';
+            if (line.includes('=') && !line.includes('==')) return 'Variable assignment';
+            if (line.includes('print') || line.includes('console.log')) return 'Output for debugging';
+            return 'Process operation';
+        }
+
+        function generateVariableDescription(variable) {
+            const descriptions = {
+                'data': 'Stores processed data',
+                'result': 'Holds calculation result',
+                'value': 'Contains current value',
+                'input': 'User input parameter',
+                'output': 'Generated output',
+                'temp': 'Temporary storage variable',
+                'index': 'Loop or array index',
+                'count': 'Counter variable'
+            };
+            return descriptions[variable.toLowerCase()] || 'Stores relevant data';
+        }
+
+        function copyToClipboard() {
+            const content = document.getElementById('outputContent').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                btn.style.background = '#28a745';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#28a745';
+                }, 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = content;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Documentation copied to clipboard!');
+            });
+        }
+
+        // Auto-resize textarea
+        document.getElementById('codeInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.max(300, this.scrollHeight) + 'px';
+        });
+    </script>
+</body>
+</html>
